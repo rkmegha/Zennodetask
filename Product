@@ -1,0 +1,65 @@
+products = {
+    "Product A": 20,
+    "Product B": 40,
+    "Product C": 50
+}
+
+discount_rules = {
+    "flat_10_discount": 10,
+    "bulk_5_discount": 5,
+    "bulk_10_discount": 10,
+    "tiered_50_discount": 50
+}
+quantities = {}
+gift_wraps = {}
+
+for product in products:
+    quantities[product] = int(input(f"Enter the quantity of {product}: "))
+    gift_wraps[product] = input(f"Is {product} wrapped as a gift? (yes/no): ").lower() == "yes"
+subtotal = 0
+
+for product in products:
+    subtotal += quantities[product] * products[product]
+
+discount_name = ""
+discount_amount = 0
+
+if subtotal > 200:
+    discount_name = "flat_10_discount"
+    discount_amount = min(discount_rules["flat_10_discount"], subtotal)
+
+for product in products:
+    if quantities[product] > 10:
+        if discount_rules["bulk_5_discount"] > discount_amount:
+            discount_name = "bulk_5_discount"
+            discount_amount = discount_rules["bulk_5_discount"]
+
+if sum(quantities.values()) > 20:
+    if discount_rules["bulk_10_discount"] > discount_amount:
+        discount_name = "bulk_10_discount"
+        discount_amount = discount_rules["bulk_10_discount"]
+
+if sum(quantities.values()) > 30 and any(qty > 15 for qty in quantities.values()):
+    if discount_rules["tiered_50_discount"] > discount_amount:
+        discount_name = "tiered_50_discount"
+        discount_amount = discount_rules["tiered_50_discount"]
+
+
+gift_wrap_fee = sum(gift_wraps.values())
+
+
+shipping_fee = 5 * (sum(quantities.values()) // 10)
+
+
+total = subtotal - discount_amount + gift_wrap_fee + shipping_fee
+
+print("Product Details:")
+for product in products:
+    print(f"{product}: Quantity - {quantities[product]}, Total - {quantities[product] * products[product]}")
+
+print("\nSubtotal:", subtotal)
+print("Discount Applied:", discount_name)
+print("Discount Amount:", discount_amount)
+print("Shipping Fee:", shipping_fee)
+print("Gift Wrap Fee:", gift_wrap_fee)
+print("Total:", total)
